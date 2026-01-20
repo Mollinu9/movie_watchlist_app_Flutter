@@ -1,4 +1,16 @@
-import 'movie_status.dart';
+enum MovieStatus {
+  toWatch,
+  watched;
+
+  String get displayName {
+    switch (this) {
+      case MovieStatus.toWatch:
+        return 'To Watch';
+      case MovieStatus.watched:
+        return 'Watched';
+    }
+  }
+}
 
 class Movie {
   final String id;
@@ -44,13 +56,10 @@ class Movie {
       genres: List<String>.from(json['genres'] as List),
       rating: json['rating'] as int?,
       notes: json['notes'] as String?,
-      status: MovieStatus.values.firstWhere(
-        (e) => e.name == json['status'],
-      ),
+      status: MovieStatus.values.firstWhere((e) => e.name == json['status']),
       imagePath: json['imagePath'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
   }
 }
-

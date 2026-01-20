@@ -1,6 +1,6 @@
 name: movie_watchlist_app
-description: "A new Flutter project."
-publish_to: 'none'
+description: "A movie watchlist application to track movies to watch and watched."
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -9,6 +9,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  firebase_analytics: ^12.1.1 # Track user interactions and app usage
+  firebase_core: ^4.4.0 # Firebase initialization (required for analytics)
+  flutter_local_notifications: ^19.5.0 # Local push notifications for movie additions
+  image_picker: ^1.2.1 # Camera and gallery access for movie posters
+  provider: ^6.1.5+1 # State management for MovieManager and ThemeManager
+  shared_preferences: ^2.5.4 # Local storage for movies, settings, and profile
+  uuid: ^4.5.2 # Generate unique IDs for movies
 
 dev_dependencies:
   flutter_test:

@@ -2,10 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:movie_watchlist_app/models/movie.dart';
 
-// ============================================================================
-// Main MovieCard Widget
-// ============================================================================
-
 class MovieCard extends StatelessWidget {
   final Movie movie;
   final VoidCallback onTap;
@@ -22,17 +18,14 @@ class MovieCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Poster image or placeholder
-            Expanded(flex: 3, child: _buildMoviePoster(movie.imagePath)),
-            // Movie information
+            Expanded(flex: 2, child: _buildMoviePoster(movie.imagePath)),
             Expanded(
-              flex: 2,
+              flex: 3,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Title
                     Text(
                       movie.title,
                       style: const TextStyle(
@@ -43,11 +36,7 @@ class MovieCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
-                    // Genre badges
-                    _buildGenreBadges(context, movie.genres),
-
-                    const Spacer(),
-                    // Rating stars
+                    Expanded(child: _buildGenreBadges(context, movie.genres)),
                     _buildRatingDisplay(movie.rating),
                   ],
                 ),
@@ -59,10 +48,7 @@ class MovieCard extends StatelessWidget {
     );
   }
 
-  // ==========================================================================
-  // Movie Poster Section
-  // ==========================================================================
-
+  // Movie poster image or placeholder
   Widget _buildMoviePoster(String? imagePath) {
     if (imagePath != null && imagePath.isNotEmpty) {
       final file = File(imagePath);
@@ -71,7 +57,6 @@ class MovieCard extends StatelessWidget {
       }
     }
 
-    // Placeholder when no image
     return Container(
       color: Colors.grey[300],
       child: const Center(
@@ -80,42 +65,33 @@ class MovieCard extends StatelessWidget {
     );
   }
 
-  // ==========================================================================
-  // Genre Badges Section
-  // ==========================================================================
-
-  Widget _buildGenreBadges(
-    BuildContext context,
-    List<String> genres, {
-    int maxGenres = 2,
-  }) {
-    return Wrap(
-      spacing: 4,
-      runSpacing: 4,
-      direction: Axis.horizontal,
-      children: genres.take(maxGenres).map((genre) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Text(
-            genre,
-            style: TextStyle(
-              fontSize: 10,
-              color: Theme.of(context).colorScheme.onPrimaryContainer,
+  // Genre badges (all genres displayed with scrolling)
+  Widget _buildGenreBadges(BuildContext context, List<String> genres) {
+    return SingleChildScrollView(
+      child: Wrap(
+        spacing: 4,
+        runSpacing: 4,
+        children: genres.map((genre) {
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(4),
             ),
-          ),
-        );
-      }).toList(),
+            child: Text(
+              genre,
+              style: TextStyle(
+                fontSize: 10,
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 
-  // ==========================================================================
-  // Rating Display Section
-  // ==========================================================================
-
+  // Star rating display
   Widget _buildRatingDisplay(int? rating) {
     if (rating == null) {
       return const Text(
@@ -123,6 +99,7 @@ class MovieCard extends StatelessWidget {
         style: TextStyle(fontSize: 11, color: Colors.grey),
       );
     }
+
     return Row(
       children: List.generate(5, (index) {
         return Icon(

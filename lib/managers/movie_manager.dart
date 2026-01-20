@@ -87,4 +87,20 @@ class MovieManager extends ChangeNotifier {
   List<Movie> getMoviesByStatus(MovieStatus status) {
     return _movies.where((movie) => movie.status == status).toList();
   }
+
+  // Add a new movie
+  void addMovie(Movie movie) {
+    _movies.add(movie);
+    notifyListeners();
+  }
+
+  // Get movie count
+  int getMovieCount() {
+    return _movies.length;
+  }
+
+  // Get movie count by status
+  int getMovieCountByStatus(MovieStatus status) {
+    return _movies.where((movie) => movie.status == status).length;
+  }
 }

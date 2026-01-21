@@ -353,6 +353,13 @@ class _MovieFormsScreenState extends State<MovieFormsScreen> {
       ),
     );
 
-    Navigator.of(context).pop();
+    // Navigate back to home screen
+    // If editing (came from detail screen), pop twice to get back to home
+    // If adding (came from home screen), pop once
+    if (isAddMode) {
+      Navigator.of(context).pop();
+    } else {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    }
   }
 }

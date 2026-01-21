@@ -4,6 +4,7 @@ import 'package:movie_watchlist_app/managers/movie_manager.dart';
 import 'package:movie_watchlist_app/models/movie.dart';
 import 'package:movie_watchlist_app/widgets/movie_card.dart';
 import 'package:movie_watchlist_app/screens/add_movie_screen.dart';
+import 'package:movie_watchlist_app/screens/movie_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -101,7 +102,11 @@ class _HomeScreenState extends State<HomeScreen>
         return MovieCard(
           movie: movie,
           onTap: () {
-            // Navigate to movie detail screen - will be implemented later
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => MovieDetailScreen(movie: movie),
+              ),
+            );
           },
         );
       },

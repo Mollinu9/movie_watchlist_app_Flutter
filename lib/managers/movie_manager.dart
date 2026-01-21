@@ -103,4 +103,10 @@ class MovieManager extends ChangeNotifier {
   int getMovieCountByStatus(MovieStatus status) {
     return _movies.where((movie) => movie.status == status).length;
   }
+
+  // Delete a movie by ID
+  void deleteMovie(String id) {
+    _movies.removeWhere((movie) => movie.id == id);
+    notifyListeners();
+  }
 }

@@ -6,14 +6,14 @@ import 'package:movie_watchlist_app/models/movie.dart';
 import 'package:movie_watchlist_app/widgets/genre_dropdown.dart';
 import 'package:movie_watchlist_app/widgets/rating_selector.dart';
 
-class AddMovieScreen extends StatefulWidget {
-  const AddMovieScreen({super.key});
+class MovieFormsScreen extends StatefulWidget {
+  const MovieFormsScreen({super.key});
 
   @override
-  State<AddMovieScreen> createState() => _AddMovieScreenState();
+  State<MovieFormsScreen> createState() => _MovieFormsScreenState();
 }
 
-class _AddMovieScreenState extends State<AddMovieScreen> {
+class _MovieFormsScreenState extends State<MovieFormsScreen> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _notesController = TextEditingController();

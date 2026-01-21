@@ -1,3 +1,4 @@
+// Enum for MoiveStatuses (for user)
 enum MovieStatus {
   toWatch,
   watched;
@@ -11,6 +12,9 @@ enum MovieStatus {
     }
   }
 }
+
+// Enum for forms (Add movie, Edit movie details)
+enum FormMode { add, edit }
 
 class Movie {
   final String id;

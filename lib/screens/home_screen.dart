@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:movie_watchlist_app/screens/movie_forms_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:movie_watchlist_app/managers/movie_manager.dart';
 import 'package:movie_watchlist_app/models/movie.dart';
 import 'package:movie_watchlist_app/widgets/movie_card.dart';
-import 'package:movie_watchlist_app/screens/add_movie_screen.dart';
 import 'package:movie_watchlist_app/screens/movie_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen>
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const AddMovieScreen()),
+            MaterialPageRoute(builder: (context) => const MovieFormsScreen()),
           );
         },
         child: const Icon(Icons.add),

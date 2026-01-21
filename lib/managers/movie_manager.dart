@@ -94,6 +94,15 @@ class MovieManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Update an existing movie
+  void updateMovie(Movie movie) {
+    final index = _movies.indexWhere((m) => m.id == movie.id);
+    if (index != -1) {
+      _movies[index] = movie;
+      notifyListeners();
+    }
+  }
+
   // Get movie count
   int getMovieCount() {
     return _movies.length;

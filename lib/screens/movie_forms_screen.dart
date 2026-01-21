@@ -7,7 +7,9 @@ import 'package:movie_watchlist_app/widgets/genre_dropdown.dart';
 import 'package:movie_watchlist_app/widgets/rating_selector.dart';
 
 class MovieFormsScreen extends StatefulWidget {
-  const MovieFormsScreen({super.key});
+  final Movie? movie;
+
+  const MovieFormsScreen({super.key, this.movie});
 
   @override
   State<MovieFormsScreen> createState() => _MovieFormsScreenState();
@@ -18,16 +20,43 @@ class _MovieFormsScreenState extends State<MovieFormsScreen> {
   final _titleController = TextEditingController();
   final _notesController = TextEditingController();
 
+  late FormMode _formMode;
   List<String> _selectedGenres = [];
   int? _selectedRating;
   MovieStatus _selectedStatus = MovieStatus.toWatch;
   String? _imagePath;
 
   @override
+  void initState() {
+    super.initState();
+    // Determine mode based on whether movie parameter is null
+    _formMode = widget.movie == null ? FormMode.add : FormMode.edit;
+
+    // Pre-fill form fields if in edit mode
+    if (_formMode == FormMode.edit && widget.movie != null) {
+      _titleController.text = widget.movie!.title;
+      _notesController.text = widget.movie!.notes ?? '';
+      _selectedGenres = List.from(widget.movie!.genres);
+      _selectedRating = widget.movie!.rating;
+      _selectedStatus = widget.movie!.status;
+      _imagePath = widget.movie!.imagePath;
+    }
+  }
+
+  @override
   void dispose() {
     _titleController.dispose();
     _notesController.dispose();
     super.dispose();
+  }
+
+  // Dynamic text getters based on form mode
+  String get appBarTitle {
+    return _formMode == FormMode.add ? 'Add Movie' : 'Edit Movie';
+  }
+
+  String get saveButtonText {
+    return _formMode == FormMode.add ? 'Save Movie' : 'Update Movie';
   }
 
   @override
@@ -38,7 +67,7 @@ class _MovieFormsScreenState extends State<MovieFormsScreen> {
   // AppBar with back button
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      title: const Text('Add Movie'),
+      title: Text(appBarTitle),
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
         onPressed: () => Navigator.of(context).pop(),
@@ -268,9 +297,9 @@ class _MovieFormsScreenState extends State<MovieFormsScreen> {
           backgroundColor: Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,
         ),
-        child: const Text(
-          'Save Movie',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        child: Text(
+          saveButtonText,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -289,18 +318,12 @@ class _MovieFormsScreenState extends State<MovieFormsScreen> {
       return;
     }
 
-    if (_selectedGenres.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select at least one genre'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
+    final movieManager = Provider.of<MovieManager>(context, listen: false);
+    final isAddMode = _formMode == FormMode.add;
 
+    // Create movie object with mode-specific values
     final movie = Movie(
-      id: const Uuid().v4(),
+      id: isAddMode ? const Uuid().v4() : widget.movie!.id,
       title: _titleController.text.trim(),
       genres: _selectedGenres,
       rating: _selectedRating,
@@ -309,16 +332,23 @@ class _MovieFormsScreenState extends State<MovieFormsScreen> {
           : _notesController.text.trim(),
       status: _selectedStatus,
       imagePath: _imagePath,
-      createdAt: DateTime.now(),
+      createdAt: isAddMode ? DateTime.now() : widget.movie!.createdAt,
       updatedAt: DateTime.now(),
     );
 
-    final movieManager = Provider.of<MovieManager>(context, listen: false);
-    movieManager.addMovie(movie);
+    // Call appropriate manager method
+    if (isAddMode) {
+      movieManager.addMovie(movie);
+    } else {
+      movieManager.updateMovie(movie);
+    }
 
+    // Show success message
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${movie.title} added successfully!'),
+        content: Text(
+          '${movie.title} ${isAddMode ? 'added' : 'updated'} successfully!',
+        ),
         backgroundColor: Colors.green,
       ),
     );

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:movie_watchlist_app/models/movie.dart';
 import 'package:movie_watchlist_app/managers/movie_manager.dart';
+import 'package:movie_watchlist_app/screens/movie_forms_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -201,7 +202,11 @@ class MovieDetailScreen extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton.icon(
         onPressed: () {
-          // Navigate to Edit Movie Screen - will be implemented later
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => MovieFormsScreen(movie: movie),
+            ),
+          );
         },
         icon: const Icon(Icons.edit),
         label: const Text('Edit'),

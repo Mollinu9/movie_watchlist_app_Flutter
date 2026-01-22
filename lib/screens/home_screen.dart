@@ -54,9 +54,9 @@ class _HomeScreenState extends State<HomeScreen>
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
+            Tab(text: 'All'),
             Tab(text: 'To Watch'),
             Tab(text: 'Watched'),
-            Tab(text: 'All'),
           ],
         ),
       ),
@@ -65,13 +65,13 @@ class _HomeScreenState extends State<HomeScreen>
           return TabBarView(
             controller: _tabController,
             children: [
+              _buildMovieGrid(movieManager.getAllMovies()),
               _buildMovieGrid(
                 movieManager.getMoviesByStatus(MovieStatus.toWatch),
               ),
               _buildMovieGrid(
                 movieManager.getMoviesByStatus(MovieStatus.watched),
               ),
-              _buildMovieGrid(movieManager.getAllMovies()),
             ],
           );
         },

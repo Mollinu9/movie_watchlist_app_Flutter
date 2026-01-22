@@ -5,6 +5,7 @@ import 'package:movie_watchlist_app/managers/movie_manager.dart';
 import 'package:movie_watchlist_app/models/movie.dart';
 import 'package:movie_watchlist_app/widgets/movie_card.dart';
 import 'package:movie_watchlist_app/screens/movie_detail_screen.dart';
+import 'package:movie_watchlist_app/screens/settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -39,6 +40,14 @@ class _HomeScreenState extends State<HomeScreen>
             icon: const Icon(Icons.search),
             onPressed: () {
               // Search functionality - future enhancement
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
             },
           ),
         ],

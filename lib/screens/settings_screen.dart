@@ -1,0 +1,147 @@
+import 'package:flutter/material.dart';
+
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  final TextEditingController _usernameController = TextEditingController();
+  bool _isDarkMode = false;
+  bool _notificationsEnabled = true;
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(appBar: _buildAppBar(), body: _buildListView());
+  }
+
+  ListView _buildListView() {
+    return ListView(
+      padding: const EdgeInsets.all(16.0),
+      children: [
+        _buildProfileSection(),
+        const SizedBox(height: 24),
+        _buildMovieStatistics(),
+        const SizedBox(height: 24),
+        const Divider(),
+        const SizedBox(height: 16),
+        _buildPreferencesSection(),
+        const SizedBox(height: 16),
+        const Divider(),
+        const SizedBox(height: 16),
+        _buildNotificationsSection(),
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: const Text('Settings'),
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+    );
+  }
+
+  Widget _buildProfileSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Profile',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16),
+        TextField(
+          controller: _usernameController,
+          decoration: const InputDecoration(
+            labelText: 'Username',
+            hintText: 'Enter your username',
+            prefixIcon: Icon(Icons.person),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMovieStatistics() {
+    return Column(
+      children: [
+        _buildStatisticTile(Icons.movie, 'Total Movies', 0),
+        _buildStatisticTile(Icons.visibility_off, 'To Watch', 0),
+        _buildStatisticTile(Icons.check_circle, 'Watched', 0),
+      ],
+    );
+  }
+
+  Widget _buildStatisticTile(IconData icon, String title, int count) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      trailing: Text(
+        count.toString(),
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _buildPreferencesSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Preferences',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16),
+        SwitchListTile(
+          title: const Text('Dark Mode'),
+          subtitle: const Text('Enable dark theme'),
+          secondary: const Icon(Icons.dark_mode),
+          value: _isDarkMode,
+          onChanged: (bool value) {
+            setState(() {
+              _isDarkMode = value;
+            });
+            // Will be connected to ThemeManager later
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNotificationsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Notifications',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16),
+        SwitchListTile(
+          title: const Text('Enable Notifications'),
+          subtitle: const Text('Receive notifications when adding movies'),
+          secondary: const Icon(Icons.notifications),
+          value: _notificationsEnabled,
+          onChanged: (bool value) {
+            setState(() {
+              _notificationsEnabled = value;
+            });
+            // Placeholder - will be implemented in Phase 8
+          },
+        ),
+      ],
+    );
+  }
+}

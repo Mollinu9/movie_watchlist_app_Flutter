@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../managers/theme_manager.dart';
+import '../managers/movie_manager.dart';
+import '../models/movie.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -9,11 +13,25 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final TextEditingController _usernameController = TextEditingController();
-  bool _isDarkMode = false;
   bool _notificationsEnabled = true;
+  String _username = ''; // In-memory storage for username
+
+  @override
+  void initState() {
+    super.initState();
+    _usernameController.text = _username;
+    _usernameController.addListener(_saveUsername);
+  }
+
+  void _saveUsername() {
+    setState(() {
+      _username = _usernameController.text;
+    });
+  }
 
   @override
   void dispose() {
+    _usernameController.removeListener(_saveUsername);
     _usernameController.dispose();
     super.dispose();
   }
@@ -75,12 +93,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildMovieStatistics() {
-    return Column(
-      children: [
-        _buildStatisticTile(Icons.movie, 'Total Movies', 0),
-        _buildStatisticTile(Icons.visibility_off, 'To Watch', 0),
-        _buildStatisticTile(Icons.check_circle, 'Watched', 0),
-      ],
+    return Consumer<MovieManager>(
+      builder: (context, movieManager, child) {
+        final totalCount = movieManager.getMovieCount();
+        final toWatchCount = movieManager.getMovieCountByStatus(
+          MovieStatus.toWatch,
+        );
+        final watchedCount = movieManager.getMovieCountByStatus(
+          MovieStatus.watched,
+        );
+
+        return Column(
+          children: [
+            _buildStatisticTile(Icons.movie, 'Total Movies', totalCount),
+            _buildStatisticTile(Icons.visibility_off, 'To Watch', toWatchCount),
+            _buildStatisticTile(Icons.check_circle, 'Watched', watchedCount),
+          ],
+        );
+      },
     );
   }
 
@@ -96,27 +126,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildPreferencesSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Preferences',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16),
-        SwitchListTile(
-          title: const Text('Dark Mode'),
-          subtitle: const Text('Enable dark theme'),
-          secondary: const Icon(Icons.dark_mode),
-          value: _isDarkMode,
-          onChanged: (bool value) {
-            setState(() {
-              _isDarkMode = value;
-            });
-            // Will be connected to ThemeManager later
-          },
-        ),
-      ],
+    return Consumer<ThemeManager>(
+      builder: (context, themeManager, child) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Preferences',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            SwitchListTile(
+              title: const Text('Dark Mode'),
+              subtitle: const Text('Enable dark theme'),
+              secondary: const Icon(Icons.dark_mode),
+              value: themeManager.isDarkMode,
+              onChanged: (bool value) {
+                themeManager.toggleTheme();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

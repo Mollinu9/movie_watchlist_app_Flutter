@@ -3,8 +3,14 @@ import 'package:provider/provider.dart';
 import 'package:movie_watchlist_app/managers/movie_manager.dart';
 import 'package:movie_watchlist_app/managers/theme_manager.dart';
 import 'package:movie_watchlist_app/screens/home_screen.dart';
+import 'package:movie_watchlist_app/services/storage_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize StorageService before running the app
+  await StorageService.initialize();
+
   runApp(const MainApp());
 }
 
@@ -18,8 +24,8 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) {
             final movieManager = MovieManager();
-            movieManager
-                .loadMockData(); // Loading mock data for testing UI and widget for visual representation
+            // Initialize MovieManager to load movies from storage
+            movieManager.initialize();
             return movieManager;
           },
         ),

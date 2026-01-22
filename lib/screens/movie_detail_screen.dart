@@ -257,13 +257,15 @@ class MovieDetailScreen extends StatelessWidget {
     );
 
     if (confirmed == true && context.mounted) {
-      _deleteMovie(context);
+      await _deleteMovie(context);
     }
   }
 
-  void _deleteMovie(BuildContext context) {
+  Future<void> _deleteMovie(BuildContext context) async {
     final movieManager = Provider.of<MovieManager>(context, listen: false);
-    movieManager.deleteMovie(movie.id);
-    Navigator.of(context).pop();
+    await movieManager.deleteMovie(movie.id);
+    if (context.mounted) {
+      Navigator.of(context).pop();
+    }
   }
 }

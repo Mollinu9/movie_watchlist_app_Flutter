@@ -1,37 +1,26 @@
 import 'package:flutter/foundation.dart';
 import 'package:movie_watchlist_app/models/movie.dart';
+import 'package:movie_watchlist_app/services/storage_service.dart';
 
 class MovieManager extends ChangeNotifier {
   final List<Movie> _movies = [];
+  bool _isInitialized = false;
 
-  // Initialize with mock data for testing UI
-  void loadMockData() {
-    _movies.clear();
-    _movies.addAll([
-      Movie(
-        id: '1',
-        title: 'The Shawshank Redemption',
-        genres: ['Drama'],
-        rating: 5,
-        notes: 'A must-watch classic about hope and friendship',
-        status: MovieStatus.watched,
-        imagePath: null,
-        createdAt: DateTime.now().subtract(const Duration(days: 30)),
-        updatedAt: DateTime.now().subtract(const Duration(days: 30)),
-      ),
-      Movie(
-        id: '2',
-        title: 'Dune: Part Two',
-        genres: ['Sci-Fi', 'Action'],
-        rating: null,
-        notes: 'Looking forward to watching this epic sequel',
-        status: MovieStatus.toWatch,
-        imagePath: null,
-        createdAt: DateTime.now().subtract(const Duration(days: 15)),
-        updatedAt: DateTime.now().subtract(const Duration(days: 15)),
-      ),
-    ]);
-    notifyListeners();
+  /// Initialize MovieManager by loading movies from storage
+  Future<void> initialize() async {
+    if (_isInitialized) return;
+
+    try {
+      final loadedMovies = await StorageService.instance.loadMovies();
+      _movies.clear();
+      _movies.addAll(loadedMovies);
+      _isInitialized = true;
+      notifyListeners();
+    } catch (e) {
+      // If loading fails, start with empty list
+      debugPrint('Error loading movies: $e');
+      _isInitialized = true;
+    }
   }
 
   // Get all movies
@@ -44,21 +33,6 @@ class MovieManager extends ChangeNotifier {
     return _movies.where((movie) => movie.status == status).toList();
   }
 
-  // Add a new movie
-  void addMovie(Movie movie) {
-    _movies.add(movie);
-    notifyListeners();
-  }
-
-  // Update an existing movie
-  void updateMovie(Movie movie) {
-    final index = _movies.indexWhere((m) => m.id == movie.id);
-    if (index != -1) {
-      _movies[index] = movie;
-      notifyListeners();
-    }
-  }
-
   // Get movie count
   int getMovieCount() {
     return _movies.length;
@@ -69,9 +43,36 @@ class MovieManager extends ChangeNotifier {
     return _movies.where((movie) => movie.status == status).length;
   }
 
+  // Add a new movie
+  Future<void> addMovie(Movie movie) async {
+    _movies.add(movie);
+    await _saveMovies();
+    notifyListeners();
+  }
+
+  // Update an existing movie
+  Future<void> updateMovie(Movie movie) async {
+    final index = _movies.indexWhere((m) => m.id == movie.id);
+    if (index != -1) {
+      _movies[index] = movie;
+      await _saveMovies();
+      notifyListeners();
+    }
+  }
+
+  // Private helper method to save movies to storage
+  Future<void> _saveMovies() async {
+    try {
+      await StorageService.instance.saveMovies(_movies);
+    } catch (e) {
+      debugPrint('Error saving movies: $e');
+    }
+  }
+
   // Delete a movie by ID
-  void deleteMovie(String id) {
+  Future<void> deleteMovie(String id) async {
     _movies.removeWhere((movie) => movie.id == id);
+    await _saveMovies();
     notifyListeners();
   }
 }

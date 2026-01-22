@@ -313,7 +313,7 @@ class _MovieFormsScreenState extends State<MovieFormsScreen> {
   }
 
   // Save movie to manager
-  void _saveMovie() {
+  Future<void> _saveMovie() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -338,12 +338,13 @@ class _MovieFormsScreenState extends State<MovieFormsScreen> {
 
     // Call appropriate manager method
     if (isAddMode) {
-      movieManager.addMovie(movie);
+      await movieManager.addMovie(movie);
     } else {
-      movieManager.updateMovie(movie);
+      await movieManager.updateMovie(movie);
     }
 
     // Show success message
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(

@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import '../models/app_settings.dart';
+import '../services/storage_service.dart';
 
 class ThemeManager extends ChangeNotifier {
   AppSettings _settings;
 
   ThemeManager() : _settings = AppSettings.defaultSettings();
+
+  // Initialize ThemeManager by loading settings from storage
+  Future<void> initialize() async {
+    _settings = await StorageService.instance.loadSettings();
+    notifyListeners();
+  }
 
   // Get current dark mode state
   bool get isDarkMode => _settings.isDarkMode;
@@ -15,8 +22,9 @@ class ThemeManager extends ChangeNotifier {
   }
 
   // Toggle between light and dark theme
-  void toggleTheme() {
+  Future<void> toggleTheme() async {
     _settings = _settings.copyWith(isDarkMode: !_settings.isDarkMode);
+    await StorageService.instance.saveSettings(_settings);
     notifyListeners();
   }
 

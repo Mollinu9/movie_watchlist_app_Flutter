@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../managers/theme_manager.dart';
 import '../managers/movie_manager.dart';
 import '../models/movie.dart';
+import '../services/storage_service.dart';
+import '../models/user_profile.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -14,24 +16,39 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final TextEditingController _usernameController = TextEditingController();
   bool _notificationsEnabled = true;
-  String _username = ''; // In-memory storage for username
+  bool _isLoadingProfile = true;
 
   @override
   void initState() {
     super.initState();
-    _usernameController.text = _username;
-    _usernameController.addListener(_saveUsername);
+    _loadProfile();
   }
 
-  void _saveUsername() {
-    setState(() {
-      _username = _usernameController.text;
-    });
+  Future<void> _loadProfile() async {
+    final profile = await StorageService.instance.loadProfile();
+    debugPrint('DEBUG: Loaded profile with username: "${profile.username}"');
+    if (mounted) {
+      setState(() {
+        _usernameController.text = profile.username;
+        _isLoadingProfile = false;
+      });
+    }
+  }
+
+  Future<void> _saveUsername(String value) async {
+    // Only save if we've finished loading the profile
+    if (!_isLoadingProfile) {
+      debugPrint('DEBUG: Saving username: "$value"');
+      final profile = UserProfile(username: value);
+      await StorageService.instance.saveProfile(profile);
+      debugPrint('DEBUG: Username saved successfully');
+    } else {
+      debugPrint('DEBUG: Skipping save - still loading profile');
+    }
   }
 
   @override
   void dispose() {
-    _usernameController.removeListener(_saveUsername);
     _usernameController.dispose();
     super.dispose();
   }
@@ -82,6 +99,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         const SizedBox(height: 16),
         TextField(
           controller: _usernameController,
+          onChanged: _saveUsername,
           decoration: const InputDecoration(
             labelText: 'Username',
             hintText: 'Enter your username',
@@ -141,8 +159,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               subtitle: const Text('Enable dark theme'),
               secondary: const Icon(Icons.dark_mode),
               value: themeManager.isDarkMode,
-              onChanged: (bool value) {
-                themeManager.toggleTheme();
+              onChanged: (bool value) async {
+                await themeManager.toggleTheme();
               },
             ),
           ],

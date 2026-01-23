@@ -29,7 +29,14 @@ class MainApp extends StatelessWidget {
             return movieManager;
           },
         ),
-        ChangeNotifierProvider(create: (context) => ThemeManager()),
+        ChangeNotifierProvider(
+          create: (context) {
+            final themeManager = ThemeManager();
+            // Initialize ThemeManager to load settings from storage
+            themeManager.initialize();
+            return themeManager;
+          },
+        ),
       ],
       child: Consumer<ThemeManager>(
         builder: (context, themeManager, child) {

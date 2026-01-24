@@ -5,6 +5,7 @@ import 'package:movie_watchlist_app/managers/movie_manager.dart';
 import 'package:movie_watchlist_app/models/movie.dart';
 import 'package:movie_watchlist_app/widgets/genre_dropdown.dart';
 import 'package:movie_watchlist_app/widgets/rating_selector.dart';
+import 'package:movie_watchlist_app/widgets/image_picker_button.dart';
 
 class MovieFormsScreen extends StatefulWidget {
   final Movie? movie;
@@ -247,40 +248,15 @@ class _MovieFormsScreenState extends State<MovieFormsScreen> {
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 8),
-        _buildImageContainer(),
-      ],
-    );
-  }
-
-  // Image container with placeholder or image
-  Widget _buildImageContainer() {
-    return Container(
-      width: double.infinity,
-      height: 200,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(8),
-        color: Colors.grey[200],
-      ),
-      child: _imagePath == null
-          ? _buildImagePlaceholder()
-          : Image.network(_imagePath!, fit: BoxFit.cover),
-    );
-  }
-
-  // Placeholder when no image selected
-  Widget _buildImagePlaceholder() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(Icons.image, size: 64, color: Colors.grey[400]),
-        const SizedBox(height: 8),
-        Text('No image selected', style: TextStyle(color: Colors.grey[600])),
-        const SizedBox(height: 8),
-        ElevatedButton.icon(
-          onPressed: _handleImagePicker,
-          icon: const Icon(Icons.add_photo_alternate),
-          label: const Text('Add Photo'),
+        ImagePickerButton(
+          imagePath: _imagePath,
+          onImageSelected: (path) {
+            setState(() {
+              _imagePath = path;
+            });
+          },
+          buttonText: _formMode == FormMode.add ? 'Add Photo' : 'Change Photo',
+          showPreview: true,
         ),
       ],
     );
@@ -303,13 +279,6 @@ class _MovieFormsScreenState extends State<MovieFormsScreen> {
         ),
       ),
     );
-  }
-
-  // Handle image picker button tap
-  void _handleImagePicker() {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Image picker coming soon!')));
   }
 
   // Save movie to manager

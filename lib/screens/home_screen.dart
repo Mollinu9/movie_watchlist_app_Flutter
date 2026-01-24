@@ -37,12 +37,6 @@ class _HomeScreenState extends State<HomeScreen>
         title: const Center(child: Text('Watchlist')),
         actions: [
           IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // Search functionality - future enhancement
-            },
-          ),
-          IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.of(context).push(

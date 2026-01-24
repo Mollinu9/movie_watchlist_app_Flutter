@@ -6,12 +6,16 @@ import 'package:movie_watchlist_app/managers/theme_manager.dart';
 import 'package:movie_watchlist_app/screens/home_screen.dart';
 import 'package:movie_watchlist_app/services/storage_service.dart';
 import 'package:movie_watchlist_app/services/notification_service.dart';
+import 'package:movie_watchlist_app/services/firebase_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase
   await Firebase.initializeApp();
+
+  // Initialize AnalyticsService
+  await AnalyticsService.initialize();
 
   // Initialize StorageService before running the app
   await StorageService.initialize();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/app_settings.dart';
 import '../services/storage_service.dart';
+import '../services/firebase_service.dart';
 
 class ThemeManager extends ChangeNotifier {
   AppSettings _settings;
@@ -26,6 +27,9 @@ class ThemeManager extends ChangeNotifier {
     _settings = _settings.copyWith(isDarkMode: !_settings.isDarkMode);
     await StorageService.instance.saveSettings(_settings);
     notifyListeners();
+
+    // Log analytics event
+    await AnalyticsService.logThemeChanged(_settings.isDarkMode);
   }
 
   // Light theme definition

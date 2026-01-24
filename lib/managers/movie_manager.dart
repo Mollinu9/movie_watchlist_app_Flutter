@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:movie_watchlist_app/models/movie.dart';
 import 'package:movie_watchlist_app/services/storage_service.dart';
 import 'package:movie_watchlist_app/services/notification_service.dart';
+import 'package:movie_watchlist_app/services/firebase_service.dart';
 
 class MovieManager extends ChangeNotifier {
   final List<Movie> _movies = [];
@@ -52,6 +53,10 @@ class MovieManager extends ChangeNotifier {
 
     // Show notification after adding movie
     await NotificationService.showMovieAddedNotification(movie.title);
+
+    // Log analytics event
+    final genre = movie.genres.isNotEmpty ? movie.genres.first : 'unknown';
+    await AnalyticsService.logMovieAdded(genre, movie.status);
   }
 
   // Update an existing movie
@@ -64,6 +69,9 @@ class MovieManager extends ChangeNotifier {
 
       // Show notification after updating movie
       await NotificationService.showMovieEditedNotification(movie.title);
+
+      // Log analytics event
+      await AnalyticsService.logMovieUpdated();
     }
   }
 
@@ -81,5 +89,8 @@ class MovieManager extends ChangeNotifier {
     _movies.removeWhere((movie) => movie.id == id);
     await _saveMovies();
     notifyListeners();
+
+    // Log analytics event
+    await AnalyticsService.logMovieDeleted();
   }
 }

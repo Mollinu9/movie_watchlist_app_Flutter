@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:movie_watchlist_app/models/movie.dart';
 import 'package:movie_watchlist_app/services/storage_service.dart';
+import 'package:movie_watchlist_app/services/notification_service.dart';
 
 class MovieManager extends ChangeNotifier {
   final List<Movie> _movies = [];
@@ -48,6 +49,9 @@ class MovieManager extends ChangeNotifier {
     _movies.add(movie);
     await _saveMovies();
     notifyListeners();
+
+    // Show notification after adding movie
+    await NotificationService.showMovieAddedNotification(movie.title);
   }
 
   // Update an existing movie
@@ -57,6 +61,9 @@ class MovieManager extends ChangeNotifier {
       _movies[index] = movie;
       await _saveMovies();
       notifyListeners();
+
+      // Show notification after updating movie
+      await NotificationService.showMovieEditedNotification(movie.title);
     }
   }
 

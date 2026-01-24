@@ -22,6 +22,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void initState() {
     super.initState();
     _loadProfile();
+    _loadNotificationPreference();
   }
 
   Future<void> _loadProfile() async {
@@ -31,6 +32,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       setState(() {
         _usernameController.text = profile.username;
         _isLoadingProfile = false;
+      });
+    }
+  }
+
+  Future<void> _loadNotificationPreference() async {
+    final settings = await StorageService.instance.loadSettings();
+    if (mounted) {
+      setState(() {
+        _notificationsEnabled = settings.notificationsEnabled;
       });
     }
   }
@@ -180,14 +190,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
         const SizedBox(height: 16),
         SwitchListTile(
           title: const Text('Enable Notifications'),
-          subtitle: const Text('Receive notifications when adding movies'),
+          subtitle: const Text(
+            'Receive notifications when adding or editing movies',
+          ),
           secondary: const Icon(Icons.notifications),
           value: _notificationsEnabled,
-          onChanged: (bool value) {
+          onChanged: (bool value) async {
             setState(() {
               _notificationsEnabled = value;
             });
-            // Placeholder - will be implemented in Phase 8
+            // Save notification preference
+            final currentSettings = await StorageService.instance
+                .loadSettings();
+            final updatedSettings = currentSettings.copyWith(
+              notificationsEnabled: value,
+            );
+            await StorageService.instance.saveSettings(updatedSettings);
           },
         ),
       ],

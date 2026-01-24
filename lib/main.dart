@@ -4,12 +4,19 @@ import 'package:movie_watchlist_app/managers/movie_manager.dart';
 import 'package:movie_watchlist_app/managers/theme_manager.dart';
 import 'package:movie_watchlist_app/screens/home_screen.dart';
 import 'package:movie_watchlist_app/services/storage_service.dart';
+import 'package:movie_watchlist_app/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize StorageService before running the app
   await StorageService.initialize();
+
+  // Initialize NotificationService
+  await NotificationService.initialize();
+
+  // Request notification permissions on first launch
+  await NotificationService.requestPermissions();
 
   runApp(const MainApp());
 }

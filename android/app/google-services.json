@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "407620707600",
+    "project_id": "movie-watchlist-flutter-cpd-ha",
+    "storage_bucket": "movie-watchlist-flutter-cpd-ha.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:407620707600:android:707769672ddc0facad7195",
+        "android_client_info": {
+          "package_name": "com.example.movie_watchlist_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfscbSU7Zg0KVsV8ior5TAgd2BDuiyNTo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

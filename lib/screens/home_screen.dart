@@ -32,6 +32,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final movieManager = context.watch<MovieManager>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text('Watchlist')),
@@ -54,21 +56,13 @@ class _HomeScreenState extends State<HomeScreen>
           ],
         ),
       ),
-      body: Consumer<MovieManager>(
-        builder: (context, movieManager, child) {
-          return TabBarView(
-            controller: _tabController,
-            children: [
-              _buildMovieGrid(movieManager.getAllMovies()),
-              _buildMovieGrid(
-                movieManager.getMoviesByStatus(MovieStatus.toWatch),
-              ),
-              _buildMovieGrid(
-                movieManager.getMoviesByStatus(MovieStatus.watched),
-              ),
-            ],
-          );
-        },
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildMovieGrid(movieManager.getAllMovies()),
+          _buildMovieGrid(movieManager.getMoviesByStatus(MovieStatus.toWatch)),
+          _buildMovieGrid(movieManager.getMoviesByStatus(MovieStatus.watched)),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -91,6 +85,29 @@ class _HomeScreenState extends State<HomeScreen>
       );
     }
 
+    return _KeepAliveGrid(movies: movies);
+  }
+}
+
+// Separate widget to keep grid alive when switching tabs
+class _KeepAliveGrid extends StatefulWidget {
+  final List<dynamic> movies;
+
+  const _KeepAliveGrid({required this.movies});
+
+  @override
+  State<_KeepAliveGrid> createState() => _KeepAliveGridState();
+}
+
+class _KeepAliveGridState extends State<_KeepAliveGrid>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context); // Required for AutomaticKeepAliveClientMixin
+
     return GridView.builder(
       padding: const EdgeInsets.all(8.0),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -99,10 +116,11 @@ class _HomeScreenState extends State<HomeScreen>
         crossAxisSpacing: 8.0,
         mainAxisSpacing: 8.0,
       ),
-      itemCount: movies.length,
+      itemCount: widget.movies.length,
       itemBuilder: (context, index) {
-        final movie = movies[index];
+        final movie = widget.movies[index];
         return MovieCard(
+          key: ValueKey(movie.id), // Add key for better widget reuse
           movie: movie,
           onTap: () {
             Navigator.of(context).push(

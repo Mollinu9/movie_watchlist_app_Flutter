@@ -7,15 +7,21 @@ import 'package:movie_watchlist_app/screens/home_screen.dart';
 import 'package:movie_watchlist_app/services/storage_service.dart';
 import 'package:movie_watchlist_app/services/notification_service.dart';
 import 'package:movie_watchlist_app/services/firebase_service.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
-  await Firebase.initializeApp();
-
-  // Initialize AnalyticsService
-  await AnalyticsService.initialize();
+  // Initialize Firebase with platform-specific options (skip if not configured)
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    // Initialize AnalyticsService
+    await AnalyticsService.initialize();
+  } catch (e) {
+    debugPrint('⚠️ Firebase not configured, running without analytics: $e');
+  }
 
   // Initialize StorageService before running the app
   await StorageService.initialize();

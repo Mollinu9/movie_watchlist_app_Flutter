@@ -53,7 +53,13 @@ class MovieCard extends StatelessWidget {
     if (imagePath != null && imagePath.isNotEmpty) {
       final file = File(imagePath);
       if (file.existsSync()) {
-        return Image.file(file, fit: BoxFit.cover, width: double.infinity);
+        return Image.file(
+          file,
+          fit: BoxFit.cover,
+          width: double.infinity,
+          cacheWidth: 500, // Cache resized image to reduce memory
+          gaplessPlayback: true, // Smooth image transitions
+        );
       }
     }
 

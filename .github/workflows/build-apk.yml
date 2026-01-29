@@ -28,11 +28,11 @@ jobs:
     
     - name: Install dependencies
       run: flutter pub get
-      working-directory: ./movie_watchlist_app
+      working-directory: movie_watchlist_app
     
     - name: Build APK
       run: flutter build apk --release
-      working-directory: ./movie_watchlist_app
+      working-directory: movie_watchlist_app
     
     - name: Upload APK
       uses: actions/upload-artifact@v4

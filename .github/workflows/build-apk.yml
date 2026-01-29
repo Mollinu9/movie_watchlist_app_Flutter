@@ -35,7 +35,7 @@ jobs:
       working-directory: ./movie_watchlist_app
     
     - name: Upload APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: movie-watchlist-app
         path: movie_watchlist_app/build/app/outputs/flutter-apk/app-release.apk

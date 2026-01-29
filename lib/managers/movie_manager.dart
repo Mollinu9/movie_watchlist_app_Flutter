@@ -86,9 +86,16 @@ class MovieManager extends ChangeNotifier {
 
   // Delete a movie by ID
   Future<void> deleteMovie(String id) async {
+    // Find the movie before deleting to get its title for notification
+    final movie = _movies.firstWhere((m) => m.id == id);
+    final movieTitle = movie.title;
+
     _movies.removeWhere((movie) => movie.id == id);
     await _saveMovies();
     notifyListeners();
+
+    // Show notification after deleting movie
+    await NotificationService.showMovieDeletedNotification(movieTitle);
 
     // Log analytics event
     await AnalyticsService.logMovieDeleted();

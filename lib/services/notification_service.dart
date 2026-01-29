@@ -93,6 +93,15 @@ class NotificationService {
     );
   }
 
+  /// Show a notification when a movie is deleted
+  static Future<void> showMovieDeletedNotification(String movieTitle) async {
+    await _showMovieNotification(
+      movieTitle,
+      'Movie Deleted',
+      'Removed "$movieTitle" from your watchlist',
+    );
+  }
+
   /// Internal method to show movie notifications
   static Future<void> _showMovieNotification(
     String movieTitle,

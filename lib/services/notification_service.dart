@@ -25,21 +25,9 @@ class NotificationService {
           requestSoundPermission: false,
         );
 
-    // Windows initialization settings
-    const WindowsInitializationSettings windowsSettings =
-        WindowsInitializationSettings(
-          appName: 'Movie Watchlist',
-          appUserModelId: 'com.example.movieWatchlistApp',
-          guid: 'a8c49d5e-8c3f-4e5a-9b2d-1f3e4d5c6b7a',
-        );
-
     // Combined initialization settings
     const InitializationSettings initializationSettings =
-        InitializationSettings(
-          android: androidSettings,
-          iOS: iosSettings,
-          windows: windowsSettings,
-        );
+        InitializationSettings(android: androidSettings, iOS: iosSettings);
 
     // Initialize the plugin
     await _notificationsPlugin.initialize(
@@ -133,15 +121,10 @@ class NotificationService {
       presentSound: true,
     );
 
-    // Notification details for Windows
-    const WindowsNotificationDetails windowsDetails =
-        WindowsNotificationDetails();
-
     // Combined notification details
     const NotificationDetails notificationDetails = NotificationDetails(
       android: androidDetails,
       iOS: iosDetails,
-      windows: windowsDetails,
     );
 
     // Show the notification

@@ -17,81 +17,59 @@ class AnalyticsService {
 
   /// Log when a movie is added
   static Future<void> logMovieAdded(String genre, MovieStatus status) async {
-    try {
-      if (!_initialized || _analytics == null) {
-        debugPrint('⚠️ ANALYTICS: Not initialized, skipping movie_added event');
-        return;
-      }
-
-      debugPrint(
-        '📊 ANALYTICS: Logging movie_added event - genre: $genre, status: ${status.name}',
-      );
-      await _analytics!.logEvent(
-        name: 'movie_added',
-        parameters: {'genre': genre, 'status': status.name},
-      );
-      debugPrint('✅ ANALYTICS: movie_added event sent to Firebase');
-    } catch (e) {
-      debugPrint('⚠️ ANALYTICS: Failed to log movie_added event: $e');
+    if (!_initialized || _analytics == null) {
+      debugPrint('⚠️ ANALYTICS: Not initialized, skipping movie_added event');
+      return;
     }
+
+    debugPrint(
+      '📊 ANALYTICS: Logging movie_added event - genre: $genre, status: ${status.name}',
+    );
+    await _analytics!.logEvent(
+      name: 'movie_added',
+      parameters: {'genre': genre, 'status': status.name},
+    );
+    debugPrint('✅ ANALYTICS: movie_added event sent to Firebase');
   }
 
   /// Log when a movie is updated
   static Future<void> logMovieUpdated() async {
-    try {
-      if (!_initialized || _analytics == null) {
-        debugPrint(
-          '⚠️ ANALYTICS: Not initialized, skipping movie_updated event',
-        );
-        return;
-      }
-
-      debugPrint('📊 ANALYTICS: Logging movie_updated event');
-      await _analytics!.logEvent(name: 'movie_updated');
-      debugPrint('✅ ANALYTICS: movie_updated event sent to Firebase');
-    } catch (e) {
-      debugPrint('⚠️ ANALYTICS: Failed to log movie_updated event: $e');
+    if (!_initialized || _analytics == null) {
+      debugPrint('⚠️ ANALYTICS: Not initialized, skipping movie_updated event');
+      return;
     }
+
+    debugPrint('📊 ANALYTICS: Logging movie_updated event');
+    await _analytics!.logEvent(name: 'movie_updated');
+    debugPrint('✅ ANALYTICS: movie_updated event sent to Firebase');
   }
 
   /// Log when a movie is deleted
   static Future<void> logMovieDeleted() async {
-    try {
-      if (!_initialized || _analytics == null) {
-        debugPrint(
-          '⚠️ ANALYTICS: Not initialized, skipping movie_deleted event',
-        );
-        return;
-      }
-
-      debugPrint('📊 ANALYTICS: Logging movie_deleted event');
-      await _analytics!.logEvent(name: 'movie_deleted');
-      debugPrint('✅ ANALYTICS: movie_deleted event sent to Firebase');
-    } catch (e) {
-      debugPrint('⚠️ ANALYTICS: Failed to log movie_deleted event: $e');
+    if (!_initialized || _analytics == null) {
+      debugPrint('⚠️ ANALYTICS: Not initialized, skipping movie_deleted event');
+      return;
     }
+
+    debugPrint('📊 ANALYTICS: Logging movie_deleted event');
+    await _analytics!.logEvent(name: 'movie_deleted');
+    debugPrint('✅ ANALYTICS: movie_deleted event sent to Firebase');
   }
 
   /// Log when theme is changed
   static Future<void> logThemeChanged(bool isDarkMode) async {
-    try {
-      if (!_initialized || _analytics == null) {
-        debugPrint(
-          '⚠️ ANALYTICS: Not initialized, skipping theme_changed event',
-        );
-        return;
-      }
-
-      debugPrint(
-        '📊 ANALYTICS: Logging theme_changed event - theme: ${isDarkMode ? 'dark' : 'light'}',
-      );
-      await _analytics!.logEvent(
-        name: 'theme_changed',
-        parameters: {'theme': isDarkMode ? 'dark' : 'light'},
-      );
-      debugPrint('✅ ANALYTICS: theme_changed event sent to Firebase');
-    } catch (e) {
-      debugPrint('⚠️ ANALYTICS: Failed to log theme_changed event: $e');
+    if (!_initialized || _analytics == null) {
+      debugPrint('⚠️ ANALYTICS: Not initialized, skipping theme_changed event');
+      return;
     }
+
+    debugPrint(
+      '📊 ANALYTICS: Logging theme_changed event - theme: ${isDarkMode ? 'dark' : 'light'}',
+    );
+    await _analytics!.logEvent(
+      name: 'theme_changed',
+      parameters: {'theme': isDarkMode ? 'dark' : 'light'},
+    );
+    debugPrint('✅ ANALYTICS: theme_changed event sent to Firebase');
   }
 }
